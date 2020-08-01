@@ -245,9 +245,13 @@ void print_tree(node* root){
                         int width = n->pre_visit_num - last_num - is_draw;
                         last_num = n->pre_visit_num;
                         for(int i = 0; i < width ; i++){
-                                printf("-");
+                                if (is_draw){
+                                        printf(" - ");
+                                }else{
+                                        printf("   ");
+                                }
                         }
-                        printf("%d", n->val);
+                        printf("%3d", n->val);
                         is_draw=1;
                 }
                 printf("\n");
