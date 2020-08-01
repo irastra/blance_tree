@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <queue>
+using namespace std;
 typedef struct t_type{
         int hight;
         int blance;
         int val;
+        int pre_visit_num;
         struct t_type * lchild;
         struct t_type * rchild;
 }node;
@@ -22,7 +25,7 @@ node* get_node(){
         return newnode;
 }
 void show(node* root){
-        printf("val : %d  hight: %d blance:%d \n",(root)->val,(root)->hight,(root)->blance);
+        printf("val : %d  hight: %d blance:%d num:%d \n",(root)->val,(root)->hight,(root)->blance, root->pre_visit_num);
 }
 void order_visit(node* root){
         if(root != NULL){
@@ -205,20 +208,68 @@ void remove_node(node ** rootx,int val,node** boss){
                 repair_tree(rootx);
         }
 }
+
+int num = 0;
+void pre_vis_number_func(node * root){
+        if(root==NULL){
+                return;
+        }
+        pre_vis_number_func(root->lchild);
+        root->pre_visit_num = num;
+        num+=1;
+        pre_vis_number_func(root->rchild);
+}
+
+void print_tree(node* root){
+        if (root == NULL){
+                return;
+        }
+        num = 0;
+        pre_vis_number_func(root);
+        queue<node*> que = queue<node*>();
+        queue<node*> que2 = queue<node*>();
+        que.push(root);
+        while(!que.empty()){
+                int last_num = 0;
+                while(!que.empty()){
+                        node* n = que.front();
+                        que.pop();
+                        if(n->lchild !=NULL){
+                                que2.push(n->lchild);
+                        }
+                        if(n->rchild != NULL){
+                                que2.push(n->rchild);
+                        }
+                        int width = n->pre_visit_num - last_num;
+                        last_num = width;
+                        for(int i = 0; i < width ; i++){
+                                printf("  ");
+                        }
+                        printf("%d", n->val);
+                }
+                printf("\n");
+                queue<node*> tmp = que;
+                que = que2;
+                que2 = tmp;
+        }
+}
+
 int main(){
         node * root=NULL;
         int n,state=0;
         while(10){
-                printf("state:\n");
+                printf("input command: \n1.add node\n2.del node \n3.find number \n4.vist\n");
                 scanf("%d",&state);
                 if(state==1){
                         printf("number add:\n");
                         scanf("%d",&n);       
                         build_tree(&root,n);
+                        print_tree(root);
                 }else if(state==2){
                         printf("number del:\n");
                         scanf("%d",&n);       
                         remove_node(&root,n,&root);
+                        print_tree(root);
                 }else if(state==3){
                         printf("number fin:\n");
                         node temp;
