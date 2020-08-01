@@ -224,13 +224,15 @@ void print_tree(node* root){
         if (root == NULL){
                 return;
         }
-        num = 0;
+        int space_cnt = 2;
+        num = 1;
         pre_vis_number_func(root);
         queue<node*> que = queue<node*>();
         queue<node*> que2 = queue<node*>();
         que.push(root);
         while(!que.empty()){
                 int last_num = 0;
+                int is_draw = 0;
                 while(!que.empty()){
                         node* n = que.front();
                         que.pop();
@@ -240,12 +242,13 @@ void print_tree(node* root){
                         if(n->rchild != NULL){
                                 que2.push(n->rchild);
                         }
-                        int width = n->pre_visit_num - last_num;
-                        last_num = width;
+                        int width = n->pre_visit_num - last_num - is_draw;
+                        last_num = n->pre_visit_num;
                         for(int i = 0; i < width ; i++){
-                                printf("  ");
+                                printf("-");
                         }
                         printf("%d", n->val);
+                        is_draw=1;
                 }
                 printf("\n");
                 queue<node*> tmp = que;
